@@ -1,0 +1,60 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "find-policy-tags",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": [
+                "find-policy-tags",
+                "--scan-path",
+                "gcp://303232385848/",
+                "--output-path",
+                "bq://lithe-joy-444308-t4/analyze_bq_dlp/dlp_script_output_folder"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "get-sample-scan-size",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": [
+                "get-sample-scan-size",
+                "--scan-path",
+                "gcp://303232385848/178230636913/lithe-joy-444308-t4",
+                "--output-path",
+                "bq://lithe-joy-444308-t4/analyze_bq_dlp/tables_results"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "sdp_scan",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": [
+                "sdp-scan",
+                "--project-id",
+                "lithe-joy-444308-t4",
+                "--dataset-id",
+                "analyze_bq_dlp",
+                "--filter-path",
+                "gcp://303232385848/lithe-joy-444308-t4/data/",
+                "--output-path",
+                "bq://lithe-joy-444308-t4/analyze_bq_dlp/dlp-results",
+                "--info-types",
+                "./infoTypes.txt"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}

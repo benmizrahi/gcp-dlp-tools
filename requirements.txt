@@ -1,0 +1,9 @@
+click
+asyncclick
+aiofiles
+google-cloud-asset
+pandas
+pandas-gbq
+googleapis-common-protos
+proto-plus
+google-cloud-dlp
