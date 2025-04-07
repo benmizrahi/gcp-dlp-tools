@@ -13,14 +13,24 @@ This repository contains a script for analyzing data using Google Cloud Platform
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/benmizrahi/gcp-dlp-analysis.git
-    cd gcp-dlp-analysis
+      git clone https://github.com/benmizrahi/gcp-dlp-tools.git
+      cd gcp-dlp-tools
     ```
 
 2. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
+
+3. Create service sccount:
+```bash
+  gcloud iam service-accounts create dlp-scripts --description="A DLP scripts service account"  --display-name="dlp-scripts-helper"
+  ```
+
+  ```bash
+  gcloud auth application-default login --impersonate-service-account dlp-scripts@lithe-joy-444308-t4.iam.gserviceaccount.com
+  ```
+4. 
 
 3. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your service account key file:
     ```bash

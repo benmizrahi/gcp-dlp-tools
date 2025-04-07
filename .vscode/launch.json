@@ -13,9 +13,9 @@
             "args": [
                 "find-policy-tags",
                 "--scan-path",
-                "gcp://303232385848/",
+                "gcp://<org-id>/",
                 "--output-path",
-                "bq://lithe-joy-444308-t4/analyze_bq_dlp/dlp_script_output_folder"
+                "bq://<project-id>/<dataset-id>/dlp_script_output_folder"
             ],
             "console": "integratedTerminal",
             "justMyCode": false
@@ -28,9 +28,9 @@
             "args": [
                 "get-sample-scan-size",
                 "--scan-path",
-                "gcp://303232385848/178230636913/lithe-joy-444308-t4",
+                "gcp://<org-id>/178230636913/<project-id>",
                 "--output-path",
-                "bq://lithe-joy-444308-t4/analyze_bq_dlp/tables_results"
+                "bq://<project-id>/<dataset-id>/tables_results"
             ],
             "console": "integratedTerminal",
             "justMyCode": false
@@ -43,13 +43,13 @@
             "args": [
                 "sdp-scan",
                 "--project-id",
-                "lithe-joy-444308-t4",
+                "<project-id>",
                 "--dataset-id",
-                "analyze_bq_dlp",
+                "<dataset-id>",
                 "--filter-path",
-                "gcp://303232385848/lithe-joy-444308-t4/data/",
+                "gcp://<org-id>/<project-id>/data/",
                 "--output-path",
-                "bq://lithe-joy-444308-t4/analyze_bq_dlp/dlp-results",
+                "bq://<project-id>/<dataset-id>/dlp-results",
                 "--info-types",
                 "./infoTypes.txt"
             ],
