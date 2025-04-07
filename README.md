@@ -2,6 +2,14 @@
 
 This repository provides a set of tools for analyzing data using Google Cloud Platform's Data Loss Prevention (DLP) API. These tools offer enhanced control for users to identify existing policy tags in BigQuery, analyze table sizes, and manage scanning sizes and costs effectively.
 
+## **Disclaimer** 
+
+License: Apache 2.0
+
+This is not an officially supported Google product. This project is not
+eligible for the [Google Open Source Software Vulnerability Rewards
+Program](https://bughunters.google.com/open-source-security).
+
 ## Prerequisites
 
 Before using these tools, ensure the following prerequisites are met:
