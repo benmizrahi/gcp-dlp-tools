@@ -84,8 +84,8 @@ python main.py get-sample-scan-size --scan-path gcp://<org-id>/<folder_id>/<proj
 ```
 
 **Options**:
-- `--scan-path`: Specify the metadata scanning level (same as above).
-- `--output-path`: Specify where to save the results (same as above).
+- `--scan-path`: Specify the metadata scanning level (same as above [1]).
+- `--output-path`: Specify where to save the results (same as above [1]).
 - `--page-size`: Number of results per page (default: 100).
 
 ---
@@ -100,7 +100,7 @@ python main.py sdp-scan --project-id <dlp-project> --dataset-id <dataset_where_v
 **Options**:
 - `--project-id` (Required): The project where the DLP scan will run.
 - `--dataset-id` (Required): The dataset containing the `global_tables_view` output from `get-sample-scan-size`.
-- `--filter-path` (Required): Specify the metadata scanning level (same as above).
+- `--filter-path` (Required): Specify the metadata scanning level (same as above [1]).
 - `--output-path` (Required): Specify where to save the results in BigQuery.
 - `--rows-limit-percent` (Optional): Percentage (1-100) of rows to scan.
 - `--rows-limit` (Optional, Default: 100): Number of rows to scan.
