@@ -12,19 +12,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import asyncio
 import click
 from google.cloud import asset_v1
 from google.protobuf.json_format import MessageToDict
 
 
-async def explore_policy_tags(organization, folder, project, dataset, page_size):
+async def explore_policy_tags(organization, folder_ids, project, dataset, page_size):
     # Create a client
     client = asset_v1.AssetServiceAsyncClient()
     
     # Set the parent resource based on provided parameters
     parent = f"organizations/{organization}"
-    if folder !=  None and folder !=   '':
-        parent = f"folders/{folder}"
+    if folder_ids != None and len(folder_ids) > 0:
+        parent = f"folders/{folder_ids[len(folder_ids)-1]}"
     if project !=  None and project != '':
         parent = f"projects/{project}"
     
@@ -66,14 +67,16 @@ async def explore_policy_tags(organization, folder, project, dataset, page_size)
                 yield index, { 'table':  data['data']['id'],'policyFields': policyFields }
             index = index + 1
         page_id = page_id + 1
+        #throttle the requests to avoid hitting the API limits
+        await asyncio.sleep(0.6) 
 
-async def get_datasets_location(organization, folder, project, dataset=None,page_size=100):
+async def get_datasets_location(organization, folder_ids, project, dataset=None,page_size=100):
     client = asset_v1.AssetServiceAsyncClient()
     
     # Set the parent resource based on provided parameters
     parent = f"organizations/{organization}"
-    if folder is not None and folder != '':
-        parent = f"folders/{folder}"
+    if folder_ids != None and len(folder_ids) > 0:
+        parent = f"folders/{folder_ids[len(folder_ids)-1]}"
     if project is not None and project != '':
         parent = f"projects/{project}"
     

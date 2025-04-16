@@ -7,3 +7,5 @@ pandas-gbq
 googleapis-common-protos
 proto-plus
 google-cloud-dlp
+asyncio
+google-cloud-bigquery

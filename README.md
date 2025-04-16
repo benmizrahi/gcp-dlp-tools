@@ -40,6 +40,7 @@ Before using these tools, ensure the following prerequisites are met:
   The service account requires the following permissions:
   
   - **Organization Level**:
+    - `roles/bigquery.metadataViewer`: Needed to give the ability to get the policy tags from the bigquery schema.
     - `roles/cloudasset.viewer`: Read-only access to scan resources from the Asset Inventory ([details](https://cloud.google.com/asset-inventory/docs/roles-permissions#roles)).
   
   - **Project Level** (for the project where the DLP API is enabled):
@@ -64,10 +65,10 @@ python main.py find-policy-tags --scan-path gcp://<org-id>/<folder_id>/<project_
 
 **Options**:
 - `--scan-path`: Specify the metadata scanning level:
-  - Organization: `gcp://<org-id>/`
-  - Folder: `gcp://<org-id>/<folder_id>/`
-  - Project: `gcp://<org-id>/<folder_id>/<project_id>/`
-  - Dataset: `gcp://<org-id>/<folder_id>/<project_id>/<dataset_id>/`
+  - Organization: `gcp://organization-id/<org-id>/`
+  - Folder: `gcp://organization-id/<org-id>/folder-id/<folder_id>/` (support also subfolders like [/folder-id/<folder_id>/folder-id/<folder_id2>/...])
+  - Project: `gcp://organization-id/<org-id>/folder-id/<folder_id>/project-id/<project_id>/`
+  - Dataset: `gcp://organization-id/<org-id>/folder-id/<folder_id>/project-id/<project_id>/dataset-id/<dataset_id>/`
 - `--output-path`: Specify where to save the results:
   - BigQuery: `bq://<project_id>/<dataset_name>/<table_name>`
   - Google Storage: `gcs://<bucket_name>/<folder>/<file_name>.csv`

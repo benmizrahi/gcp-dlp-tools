@@ -16,25 +16,49 @@ import asyncio
 from src.scanners import inspection
 
 
+
 def parse_scan_path(scan_path):
-    # Validate and parse scan path
-    scan_path_parts = scan_path.split('/')
-    
-    # Validate basic format
     if not scan_path.startswith("gcp://"):
-        raise ValueError('Invalid scan path format. It should start with gcp://')
+        raise ValueError("Invalid scan path format. It should start with gcp://")
     
-    # Extract available components
-    if len(scan_path_parts) < 3:
-        raise ValueError('Organization ID is required in the scan path')
+    scan_path_parts = scan_path.split('/')
+    if len(scan_path_parts) < 3 or scan_path_parts[2] != "organization-id":
+        raise ValueError("Invalid scan path format. Missing organization-id.")
+    
+    #remove empty strings
+    scan_path_parts =  [x for x in scan_path_parts if x != '']
     
     organization_id = scan_path_parts[2]
-    folder_id = scan_path_parts[3] if len(scan_path_parts) > 3 else None
-    project_id = scan_path_parts[4] if len(scan_path_parts) > 4 else None
-    dataset_id = scan_path_parts[5] if len(scan_path_parts) > 5 else None
+    folder_ids = []
+    project_id = None
+    dataset_id = None
     
-    return organization_id, folder_id, project_id, dataset_id
-
+    i = 3
+    while i < len(scan_path_parts):
+        if scan_path_parts[i] == "folder-id":
+            if i + 1 < len(scan_path_parts):
+                folder_ids.append(scan_path_parts[i + 1])
+                i += 2
+            else:
+                raise ValueError("Invalid scan path format. Missing folder-id value.")
+        elif scan_path_parts[i] == "project-id":
+            if i + 1 < len(scan_path_parts):
+                project_id = scan_path_parts[i + 1]
+                i += 2
+            else:
+                raise ValueError("Invalid scan path format. Missing project-id value.")
+        elif scan_path_parts[i] == "dataset-id":
+            if i + 1 < len(scan_path_parts):
+                dataset_id = scan_path_parts[i + 1]
+                i += 2
+            else:
+                raise ValueError("Invalid scan path format. Missing dataset-id value.")
+        else:
+            raise ValueError(f"Unexpected path component: {scan_path_parts[i]}")
+    
+    return [organization_id,folder_ids,project_id, dataset_id]
+    
+  
 def process_table(row_dict, rows_limit_val, rows_limit_percent_val,dlp_project_id,info_types):
     # Create a new event loop for this process
     loop = asyncio.new_event_loop()

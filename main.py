@@ -22,6 +22,7 @@ import asyncclick as click
 from src.scanners import policy_tags
 from src.outputs import output_factory
 from google.cloud import bigquery
+from src.scanners.bigquery import get_table_policy_tags
 
 from src.utils import tools
 
@@ -32,13 +33,13 @@ def cli():
 
 @cli.command()
 @click.option('--output-path', required=True, help="Output file path can be Google Cloud Storage - have to start with gs:// or bigquery bq:// ")
-@click.option('--scan-path', required=True, help='Example: gcp://<organization-id>/<folder-id>/<project-id>/<dataset-id>')
+@click.option('--scan-path', required=True, help='Example: gcp://organization-id/<organization-id>/folder-id/<folder-id>/project-id/<project-id>/dataset-id/<dataset-id>')
 @click.option('--page-size', default=100, help='Number of results per page')
 async def find_policy_tags(scan_path, output_path,page_size):
     try:
-        organization_id, folder_id, project_id, dataset_id = tools.parse_scan_path(scan_path)
+        organization_id, folder_ids, project_id, dataset_id = tools.parse_scan_path(scan_path)
         click.echo(f'Organization ID: {organization_id}')
-        if folder_id: click.echo(f'Folder ID: {folder_id}')
+        if folder_ids: click.echo(f'Folder ID: {folder_ids}')
         if project_id: click.echo(f'Project ID: {project_id}')
         if dataset_id: click.echo(f'Dataset ID: {dataset_id}')
     except ValueError as e:
@@ -48,20 +49,23 @@ async def find_policy_tags(scan_path, output_path,page_size):
     output_func = await output_factory.get_output(output_path)
     click.echo("start scanning for policyTags...")
     df = pd.DataFrame()
-    async for index, data in policy_tags.explore_policy_tags(organization=organization_id, folder=folder_id, project=project_id, dataset=dataset_id,page_size=page_size):
-        df = await output_func(index, data, df)
+    async for index, data in policy_tags.explore_policy_tags(organization=organization_id, folder_ids=folder_ids, project=project_id, dataset=dataset_id,page_size=page_size):
+        [project,dataset_table] =  data['table'].split(":")
+        [dataset,table] = dataset_table.split(".")
+        columns_policy_tags = await get_table_policy_tags(project_id=project,dataset_id=dataset, table_id=table)
+        df = await output_func(index, { 'project': project, 'dataset': dataset, 'table': table,  } | columns_policy_tags , df)
     await output_func.close(df)
     click.echo(f"done dumping results to output...")
 
 @cli.command()
-@click.option('--scan-path', default=None, help='Example: gcp://<organization-id>/<folder-id>/<project-id>/<dataset-id>')
+@click.option('--scan-path', required=True, help='Example: gcp://organization-id/<organization-id>/folder-id/<folder-id>/project-id/<project-id>/dataset-id/<dataset-id>')
 @click.option('--output-path', default=None, help="Output bigquery view bq://<project-id>/<dataset-id>/<view-id>")
 @click.option('--page-size', default=100, help='Number of results per page')
 async def get_sample_scan_size(scan_path, output_path,page_size):
     try:
-        organization_id, folder_id, project_id, dataset_id = tools.parse_scan_path(scan_path)
+        organization_id, folder_ids, project_id, dataset_id = tools.parse_scan_path(scan_path)
         click.echo(f'Organization ID: {organization_id}')
-        if folder_id: click.echo(f'Folder ID: {folder_id}')
+        if folder_ids: click.echo(f'Folder ID: {folder_ids}')
         if project_id: click.echo(f'Project ID: {project_id}')
         if dataset_id: click.echo(f'Dataset ID: {dataset_id}')
     except ValueError as e:
@@ -71,7 +75,7 @@ async def get_sample_scan_size(scan_path, output_path,page_size):
     bq_path = output_path.replace('bq://', '')
     project, dataset, table = bq_path.split('/')
     bigquery_client = bigquery.Client()
-    async for index, data in policy_tags.get_datasets_location(organization_id, folder_id, project_id,page_size=page_size):
+    async for index, data in policy_tags.get_datasets_location(organization_id, folder_ids, project_id,page_size=page_size):
         query = f"""SELECT
                 "{organization_id}" AS organization_id,
                 project_id,
