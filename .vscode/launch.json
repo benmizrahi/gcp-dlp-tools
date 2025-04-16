@@ -13,7 +13,7 @@
             "args": [
                 "find-policy-tags",
                 "--scan-path",
-                "gcp://<org-id>/",
+                "gcp://organization-id/<org-id>/folder-id/<folder_id>/project-id/<project_id>/dataset-id/<dataset_id>",
                 "--output-path",
                 "bq://<project-id>/<dataset-id>/dlp_script_output_folder"
             ],
@@ -28,7 +28,7 @@
             "args": [
                 "get-sample-scan-size",
                 "--scan-path",
-                "gcp://<org-id>/178230636913/<project-id>",
+                "gcp://organization-id/<org-id>/folder-id/<folder_id>/project-id/<project_id>/dataset-id/<dataset_id>",
                 "--output-path",
                 "bq://<project-id>/<dataset-id>/tables_results"
             ],

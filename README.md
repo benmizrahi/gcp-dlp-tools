@@ -60,7 +60,7 @@ Run the script with the following commands based on your requirements:
 Scan a dataset for policy tags and export the results to a specified output path. This operation does not perform DLP scanning or BigQuery jobs (unless results are written to BigQuery).
 
 ```bash
-python main.py find-policy-tags --scan-path gcp://<org-id>/<folder_id>/<project_id>/<dataset_id> --output-path bq://<project_id>/<dataset_name>/<table_name>
+python main.py find-policy-tags --scan-path gcp://organization-id/<org-id>/folder-id/<folder_id>/project-id/<project_id>/dataset-id/<dataset_id> --output-path bq://<project_id>/<dataset_name>/<table_name>
 ```
 
 **Options**:
