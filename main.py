@@ -48,12 +48,19 @@ async def find_policy_tags(scan_path, output_path,page_size):
     
     output_func = await output_factory.get_output(output_path)
     click.echo("start scanning for policyTags...")
+    
     df = pd.DataFrame()
     async for index, data in policy_tags.explore_policy_tags(organization=organization_id, folder_ids=folder_ids, project=project_id, dataset=dataset_id,page_size=page_size):
         [project,dataset_table] =  data['table'].split(":")
         [dataset,table] = dataset_table.split(".")
         columns_policy_tags = await get_table_policy_tags(project_id=project,dataset_id=dataset, table_id=table)
-        df = await output_func(index, { 'project': project, 'dataset': dataset, 'table': table,  } | columns_policy_tags , df)
+        extended_columns = []
+        for column in columns_policy_tags:
+            extended_columns.append({
+                'column_name': column['name'].encode('utf-8'),
+                'policy_tags': column['policy_tags'],
+            })
+        df = await output_func(index, { 'project': project, 'dataset': dataset, 'table': table, 'columns' : extended_columns }  , df)
     await output_func.close(df)
     click.echo(f"done dumping results to output...")
 
