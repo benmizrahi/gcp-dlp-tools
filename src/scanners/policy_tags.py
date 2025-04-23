@@ -29,11 +29,7 @@ async def explore_policy_tags(organization, folder_ids, project, dataset, page_s
     if project !=  None and project != '':
         parent = f"projects/{project}"
     
-    # Build the dataset filter if provided
-    dataset_filter = ""
-    # if dataset !=  None and project !=  None:
-        # dataset_filter = f"parent:projects/{project}/datasets/{dataset}"
-    
+
     # Initialize request with pagination settings
     request = asset_v1.ListAssetsRequest(
         parent=parent,
@@ -41,13 +37,12 @@ async def explore_policy_tags(organization, folder_ids, project, dataset, page_s
         page_size=page_size,  # Number of results per page
         content_type=asset_v1.ContentType.RESOURCE,  # Get the resource representation
     )
-    
-    # Apply dataset filter if specified
-    # if dataset_filter:
-    #     request.filter = dataset_filter
-    
+ 
     # Use the pagination built into the client
     page_iterator = await client.list_assets(request=request)
+    
+    if dataset is not None:
+        click.echo(f"Filtering by dataset: {dataset}")
     
     index = 0
     page_id = 1
@@ -57,6 +52,11 @@ async def explore_policy_tags(organization, folder_ids, project, dataset, page_s
         click.echo(f"working on page {page_id}")
         for response in page.assets:
             data = MessageToDict(response.resource._pb)
+            
+            if dataset is not None and dataset != '' and data['data']['tableReference']['datasetId'] == dataset:
+                click.echo(f"Skipping {data['data']['id']} - dataset filtred out")
+                continue
+            
             policyFields = []
             # Only yield responses containing policy tags
             for d in data['data']['schema']['fields']:
