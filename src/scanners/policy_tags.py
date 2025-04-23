@@ -31,8 +31,8 @@ async def explore_policy_tags(organization, folder_ids, project, dataset, page_s
     
     # Build the dataset filter if provided
     dataset_filter = ""
-    if dataset !=  None and project !=  None:
-        dataset_filter = f"parent:projects/{project}/datasets/{dataset}"
+    # if dataset !=  None and project !=  None:
+        # dataset_filter = f"parent:projects/{project}/datasets/{dataset}"
     
     # Initialize request with pagination settings
     request = asset_v1.ListAssetsRequest(
@@ -43,8 +43,8 @@ async def explore_policy_tags(organization, folder_ids, project, dataset, page_s
     )
     
     # Apply dataset filter if specified
-    if dataset_filter:
-        request.filter = dataset_filter
+    # if dataset_filter:
+    #     request.filter = dataset_filter
     
     # Use the pagination built into the client
     page_iterator = await client.list_assets(request=request)

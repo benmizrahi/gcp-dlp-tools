@@ -53,14 +53,21 @@ async def find_policy_tags(scan_path, output_path,page_size):
     async for index, data in policy_tags.explore_policy_tags(organization=organization_id, folder_ids=folder_ids, project=project_id, dataset=dataset_id,page_size=page_size):
         [project,dataset_table] =  data['table'].split(":")
         [dataset,table] = dataset_table.split(".")
-        columns_policy_tags = await get_table_policy_tags(project_id=project,dataset_id=dataset, table_id=table)
-        extended_columns = []
-        for column in columns_policy_tags:
-            extended_columns.append({
-                'column_name': column['name'].encode('utf-8'),
-                'policy_tags': column['policy_tags'],
-            })
-        df = await output_func(index, { 'project': project, 'dataset': dataset, 'table': table, 'columns' : extended_columns }  , df)
+        
+        error = ''
+        extended_columns = []    
+        try:
+            columns_policy_tags = await get_table_policy_tags(project_id=project,dataset_id=dataset, table_id=table)
+            for column in columns_policy_tags:
+                extended_columns.append({
+                    'column_name': column['name'],
+                    'policy_tags': column['policy_tags'],
+                })
+        except Exception as e:
+            click.echo(f"Error getting table metadata: {e}")
+            error = str(e)
+        
+        df = await output_func(index, { 'project': project, 'dataset': dataset, 'table': table, 'error': error, 'results' : extended_columns }  , df)
     await output_func.close(df)
     click.echo(f"done dumping results to output...")
 
