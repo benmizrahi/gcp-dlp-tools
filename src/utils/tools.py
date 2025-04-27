@@ -58,7 +58,7 @@ def parse_scan_path(scan_path):
     
     return [organization_id,folder_ids,project_id, dataset_id]
     
-  
+ 
 def process_table(row_dict, rows_limit_val, rows_limit_percent_val,dlp_project_id,info_types):
     # Create a new event loop for this process
     loop = asyncio.new_event_loop()

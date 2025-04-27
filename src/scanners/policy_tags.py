@@ -40,32 +40,39 @@ async def explore_policy_tags(organization, folder_ids, project, dataset, page_s
  
     # Use the pagination built into the client
     page_iterator = await client.list_assets(request=request)
-    
+    total_pages = 0
+    async for page in page_iterator.pages:
+        total_pages += 1
+
+    click.echo(f"Total pages: {total_pages}")
     if dataset is not None:
         click.echo(f"Filtering by dataset: {dataset}")
     
+    page_iterator = await client.list_assets(request=request)
     index = 0
     page_id = 1
     # Process each page of results
     async for page in page_iterator.pages:
         # Process each item in the page
-        click.echo(f"working on page {page_id}")
+        click.echo(f"working on page {page_id} of {total_pages}")
         for response in page.assets:
-            data = MessageToDict(response.resource._pb)
-            
-            if dataset is not None and dataset != '' and data['data']['tableReference']['datasetId'] == dataset:
-                click.echo(f"Skipping {data['data']['id']} - dataset filtred out")
+            try:
+                data = MessageToDict(response.resource._pb)
+                if dataset is not None and dataset != '' and data['data']['tableReference']['datasetId'] == dataset:
+                    click.echo(f"Skipping {data['data']['id']} - dataset filtred out")
+                    continue
+                policyFields = []
+                # Only yield responses containing policy tags
+                for d in data['data']['schema']['fields']:
+                    if 'policyTags' in d:
+                        policyFields.append({'name': d['name'], 'policyTags': d['policyTags']})
+                        break
+                if len(policyFields) > 0:
+                    yield index, { 'table':  data['data']['id'],'policyFields': policyFields }
+                index = index + 1
+            except Exception as e:
+                click.echo(f" WARNNING: error processing asset: {e}, skipping, asset: {data}")
                 continue
-            
-            policyFields = []
-            # Only yield responses containing policy tags
-            for d in data['data']['schema']['fields']:
-                if 'policyTags' in d:
-                    policyFields.append({'name': d['name'], 'policyTags': d['policyTags']})
-                    break
-            if len(policyFields) > 0:
-                yield index, { 'table':  data['data']['id'],'policyFields': policyFields }
-            index = index + 1
         page_id = page_id + 1
         #throttle the requests to avoid hitting the API limits
         await asyncio.sleep(0.6) 
