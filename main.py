@@ -34,7 +34,7 @@ def cli():
 @cli.command()
 @click.option('--output-path', required=True, help="Output file path can be Google Cloud Storage - have to start with gs:// or bigquery bq:// ")
 @click.option('--scan-path', required=True, help='Example: gcp://organization-id/<organization-id>/folder-id/<folder-id>/project-id/<project-id>/dataset-id/<dataset-id>')
-@click.option('--page-size', default=2, help='Number of results per page')
+@click.option('--page-size', default=100, help='Number of results per page')
 async def find_policy_tags(scan_path, output_path,page_size):
     try:
         organization_id, folder_ids, project_id, dataset_id = tools.parse_scan_path(scan_path)
