@@ -48,6 +48,8 @@ Before using these tools, ensure the following prerequisites are met:
   - **Project Level** (for the project where the DLP API is enabled):
     - `roles/bigquery.admin`: To write outputs to BigQuery.
     - `roles/storage.objectUser`: To write outputs to Google Cloud Storage.
+    - `roles/dlp.jobs.editor`: ability to create dlp jobs in DLP service.
+    - `roles/serviceusage.serviceUsageConsumer`: Ability to inspect service states and operations, and consume quota and billing for a consumer project.
 
 4. Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable to point to your service account key file:
   ```bash
