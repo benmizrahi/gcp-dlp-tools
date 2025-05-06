@@ -9,3 +9,6 @@ proto-plus
 google-cloud-dlp
 asyncio
 google-cloud-bigquery
+fsspec
+gcsfs
+google-cloud-storage

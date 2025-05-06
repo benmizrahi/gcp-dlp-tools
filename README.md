@@ -18,6 +18,8 @@ Before using these tools, ensure the following prerequisites are met:
 2. **DLP API Enabled**: Enable the DLP API in your GCP project.
 3. **Service Account**: Create a service account with the required permissions and download its JSON key file.
 4. **Python Environment**: Install Python 3.7 or later.
+5. **Bucket for results**: The bucket where script outputs will be stored.
+
 
 ## Setup Instructions
 
@@ -88,6 +90,7 @@ python main.py get-sample-scan-size --scan-path gcp://<org-id>/<folder_id>/<proj
 - `--scan-path`: Specify the metadata scanning level (same as above [1]).
 - `--output-path`: Specify where to save the results (same as above [1]).
 - `--page-size`: Number of results per page (default: 100).
+- `--export_bucket`: The bucket where the script should dump the results 
 
 ---
 
